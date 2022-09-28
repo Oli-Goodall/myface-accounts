@@ -13,6 +13,7 @@ namespace MyFace.Repositories
         User Create(CreateUserRequest newUser);
         User Update(int id, UpdateUserRequest update);
         void Delete(int id);
+        User GetByUsername(string username);
     }
     
     public class UsersRepo : IUsersRepo
@@ -56,6 +57,14 @@ namespace MyFace.Repositories
             return _context.Users
                 .Single(user => user.Id == id);
         }
+
+        
+        public User GetByUsername(string username)
+        {
+            return _context.Users
+                .Single(user => user.Username == username);
+        }
+
 
         public User Create(CreateUserRequest newUser)
         {
