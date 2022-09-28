@@ -1,13 +1,14 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using MyFace.Models.Database;
+using MyFace.Helpers;
 
 namespace MyFace.Data
 {
     public static class SampleUsers
     {
         public const int NumberOfUsers = 100;
-
+        public const string everyPassword = "password";
         private static readonly IList<IList<string>> Data = new List<IList<string>>
         {
             new List<string> { "Kania", "Placido", "kplacido0", "kplacido0@qq.com" },
@@ -119,6 +120,7 @@ namespace MyFace.Data
 
         private static User CreateRandomUser(int index)
         {
+            byte[] mySalt = PasswordHelper.GenerateSalt();
             return new User
             {
                 FirstName = Data[index][0],
@@ -127,6 +129,8 @@ namespace MyFace.Data
                 Email = Data[index][3],
                 ProfileImageUrl = ImageGenerator.GetProfileImage(Data[index][2]),
                 CoverImageUrl = ImageGenerator.GetCoverImage(index),
+                HashedPassword = PasswordHelper.GenerateHash(everyPassword, mySalt),
+                Salt = mySalt,
             };
         }
     }
