@@ -2,6 +2,7 @@
 import {Page} from "../Page/Page";
 import {LoginContext} from "../../Components/LoginManager/LoginManager";
 import "./Login.scss";
+import { stringify } from 'querystring';
 
 export function Login(): JSX.Element {
     const loginContext = useContext(LoginContext);
@@ -11,7 +12,7 @@ export function Login(): JSX.Element {
     
     function tryLogin(event: FormEvent) {
         event.preventDefault();
-        loginContext.logIn();
+        loginContext.logIn(username, password);
     }
     
     return (

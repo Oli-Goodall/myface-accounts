@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System;
+using Microsoft.AspNetCore.Mvc;
 using MyFace.Helpers;
 using MyFace.Models.Request;
 using MyFace.Models.Response;
@@ -44,6 +45,7 @@ namespace MyFace.Controllers
         [HttpPost("create")]
         public IActionResult Create([FromBody] CreateUserRequest newUser)
         {
+            Console.WriteLine("Hello");
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
