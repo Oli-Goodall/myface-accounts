@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using MyFace.Helpers;
 using MyFace.Models.Request;
 using MyFace.Models.Response;
 using MyFace.Repositories;
@@ -10,15 +11,27 @@ namespace MyFace.Controllers
     public class PostsController : ControllerBase
     {    
         private readonly IPostsRepo _posts;
+        private readonly IUsersRepo _users;
+        private readonly AuthenticationHelper _authenticationHelper;
 
-        public PostsController(IPostsRepo posts)
+        public PostsController(IPostsRepo posts, IUsersRepo users)
         {
             _posts = posts;
+            _users = users;
+            _authenticationHelper = new AuthenticationHelper(_users);
         }
         
         [HttpGet("")]
-        public ActionResult<PostListResponse> Search([FromQuery] PostSearchRequest searchRequest)
+        public ActionResult<PostListResponse> Search(
+            [FromQuery] PostSearchRequest searchRequest,
+            [FromHeader] string authorization
+        )
         {
+            if(!_authenticationHelper.IsAuthenticated(authorization))
+            {
+                return Unauthorized();
+            }
+
             var posts = _posts.Search(searchRequest);
             var postCount = _posts.Count(searchRequest);
             return PostListResponse.Create(searchRequest, posts, postCount);

@@ -14,11 +14,13 @@ namespace MyFace.Controllers
     {
         private readonly IPostsRepo _posts;
         private readonly IUsersRepo _users;
+        private readonly AuthenticationHelper _authenticationHelper;
 
         public FeedController(IPostsRepo posts, IUsersRepo users)
         {
             _posts = posts;
             _users = users;
+            _authenticationHelper = new AuthenticationHelper(_users);
         }
 
         [HttpGet("")]
@@ -27,21 +29,11 @@ namespace MyFace.Controllers
             [FromHeader] string authorization
         )
         {
-            string myAuthorization = authorization.Substring(6);
-            myAuthorization = System.Text.Encoding.UTF8.GetString(Convert.FromBase64String(myAuthorization));
-            string username = myAuthorization.Split(":")[0];
-            string attemptedPassword = myAuthorization.Split(":")[1];
-
-            User thisUser = _users.GetByUsername(username);
-
-            byte[] thisUserSalt = thisUser.Salt;
-            string attemptedHashedPassword = PasswordHelper.GenerateHash(attemptedPassword, thisUserSalt);
-
-            if(attemptedHashedPassword!=thisUser.HashedPassword)
+            if(!_authenticationHelper.IsAuthenticated(authorization))
             {
                 return Unauthorized();
             }
-
+            
             var posts = _posts.SearchFeed(searchRequest);
             var postCount = _posts.Count(searchRequest);
             return FeedModel.Create(searchRequest, posts, postCount);

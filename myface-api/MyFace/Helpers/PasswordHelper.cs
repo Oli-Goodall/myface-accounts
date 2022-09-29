@@ -6,7 +6,6 @@ namespace MyFace.Helpers
 {
     public static class PasswordHelper
     {
-
         public static byte[] GenerateSalt()
         {
             byte[] salt = new byte[128 / 8];
