@@ -9,7 +9,9 @@ import { LoginContext } from '../../Components/LoginManager/LoginManager';
 
 export function Feed(): JSX.Element {
     const {username, password} = useContext(LoginContext);
+
     const fetchPostsForList = async (page: number, pageSize: number): Promise<ListResponse<Post>> => {
+
         return fetchPosts(page, pageSize, username, password)
     } 
     return (
